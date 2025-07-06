@@ -10,7 +10,7 @@ namespace HDE
         public:
   
         //Constructer
-        BindingSocket(int domain , int service , int protocol,int port , u_long interface);
+        BindingSocket(int domain , int service , int protocol,int port , unsigned long interface_addr);
 
         //Virtual function from parent 
         int connect_to_network(int sock, struct sockaddr_in address);

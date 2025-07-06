@@ -2,6 +2,9 @@
 #define TestServer_hpp
 
 #include <stdio.h>
+#include <cstring>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 
 #include "SimpleServer.hpp"
 
@@ -23,5 +26,7 @@ namespace HDE
             public:
             void launch() ;
             TestServer();
-    }
+    };
 }
+
+#endif

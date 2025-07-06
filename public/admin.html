@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Admin Panel</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="admin-container">
+    <div class="admin-header">
+        <h1>🔧 Server Admin Panel</h1>
+        <p>Real-time server statistics and logs</p>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number" id="total-requests">0</div>
+            <div class="stat-label">Total Requests</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="active-connections">0</div>
+            <div class="stat-label">Active Connections</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="uptime">0s</div>
+            <div class="stat-label">Server Uptime</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="memory-usage">0 MB</div>
+            <div class="stat-label">Memory Usage</div>
+        </div>
+    </div>
+    
+    <div class="logs-section">
+        <h3> Recent Server Logs</h3>
+        <div id="logs-container">
+            <div class="log-entry info">
+                <strong>[INFO]</strong> Server started on port 8080
+            </div>
+            <div class="log-entry success">
+                <strong>[SUCCESS]</strong> Admin panel loaded successfully
+            </div>
+        </div>
+    </div>
+    
+    <div class="logs-section">
+        <h3> Recent Client Connections</h3>
+        <div id="connections-container">
+            <div class="log-entry info">
+                <strong>[CONNECTION]</strong> 127.0.0.1:12345 - GET /admin
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simulate real-time updates
+        let requestCount = 0;
+        let connectionCount = 0;
+        let startTime = Date.now();
+        
+        function updateStats() {
+            // Update request count
+            requestCount += Math.floor(Math.random() * 3);
+            document.getElementById('total-requests').textContent = requestCount;
+            
+            // Update active connections
+            connectionCount = Math.floor(Math.random() * 5) + 1;
+            document.getElementById('active-connections').textContent = connectionCount;
+            
+            // Update uptime
+            const uptime = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('uptime').textContent = uptime + 's';
+            
+            // Update memory usage
+            const memory = Math.floor(Math.random() * 50) + 10;
+            document.getElementById('memory-usage').textContent = memory + ' MB';
+        }
+        
+        // Update stats every 2 seconds
+        setInterval(updateStats, 2000);
+        
+        // Add some sample logs
+        const logTypes = ['info', 'success', 'error'];
+        const logMessages = [
+            'Client connected from 192.168.1.100',
+            'Served index.html successfully',
+            '404 error for /missing-page',
+            'Static file served: style.css',
+            'New thread spawned for client',
+            'Connection closed gracefully'
+        ];
+        
+        function addRandomLog() {
+            const logsContainer = document.getElementById('logs-container');
+            const logType = logTypes[Math.floor(Math.random() * logTypes.length)];
+            const message = logMessages[Math.floor(Math.random() * logMessages.length)];
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${logType}`;
+            logEntry.innerHTML = `<strong>[${logType.toUpperCase()}]</strong> ${message}`;
+            
+            logsContainer.insertBefore(logEntry, logsContainer.firstChild);
+            
+            // Keep only last 10 logs
+            if (logsContainer.children.length > 10) {
+                logsContainer.removeChild(logsContainer.lastChild);
+            }
+        }
+        
+        // Add random logs every 3 seconds
+        setInterval(addRandomLog, 3000);
+    </script>
+</body>
+</html> 

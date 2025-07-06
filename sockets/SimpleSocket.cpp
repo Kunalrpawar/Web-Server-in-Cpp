@@ -3,12 +3,12 @@
 namespace HDE
 {
     // Constructor definition
-    SimpleSocket::SimpleSocket(int domain, int service, int protocol, int port, u_long interface)
+    SimpleSocket::SimpleSocket(int domain, int service, int protocol, int port, unsigned long interface_addr)
     {
         // Fill address structure
         address.sin_family = domain;
         address.sin_port = htons(port);
-        address.sin_addr.s_addr = htonl(interface);
+        address.sin_addr.s_addr = htonl(interface_addr);
 
         // Create socket
         sock = socket(domain, service, protocol);
@@ -25,6 +25,12 @@ namespace HDE
             perror("Failed to connect...");
             exit(EXIT_FAILURE);
         }
+    }
+
+    // Setter: set connection status
+    void SimpleSocket::set_connection(int conn)
+    {
+        connection = conn;
     }
 
     // Getter: return address

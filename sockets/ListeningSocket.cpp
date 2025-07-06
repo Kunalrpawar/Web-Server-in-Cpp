@@ -1,7 +1,7 @@
 #include "ListeningSocket.hpp"
 
-HDE :: ListeningSocket :: ListeningSocket(int domain, int service, int protocol, int port, u_long interface, int bklg) :
-    BindingSocket(domain, service, protocol, port, interface)
+HDE :: ListeningSocket :: ListeningSocket(int domain, int service, int protocol, int port, unsigned long interface_addr, int bklg) :
+    BindingSocket(domain, service, protocol, port, interface_addr)
 {
     backlog =bklg;
     start_listening();
@@ -11,7 +11,7 @@ HDE :: ListeningSocket :: ListeningSocket(int domain, int service, int protocol,
 void HDE :: ListeningSocket :: start_listening()
 {
 
-    listening = listen(get_sock() , backlog)
+    listening = listen(get_sock() , backlog);
 
 }
 

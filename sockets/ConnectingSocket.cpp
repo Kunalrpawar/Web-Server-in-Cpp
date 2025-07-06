@@ -1,7 +1,7 @@
 #include "ConnectingSocket.hpp"
 
-HDE::ConnectingSocket::ConnectingSocket(int domain, int service, int protocol, int port, u_long interface)
-    : SimpleSocket(domain, service, protocol, port, interface)
+HDE::ConnectingSocket::ConnectingSocket(int domain, int service, int protocol, int port, unsigned long interface_addr)
+    : SimpleSocket(domain, service, protocol, port, interface_addr)
 {
 
     set_connection(connect_to_network(get_sock(), get_address()));

@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #include "../sockets/ListeningSocket.hpp"
-#include "../hdelibc-networking.hpp"
+#include "../Networking/hdelibc-networking.hpp"
 
 #include <unistd.h>
 
@@ -21,9 +21,9 @@ namespace HDE
         virtual void responder()=0;
 
         public:
-        SimpleServer(int domain, int service, int protocol, int port, u_long interface, int bklg);
+        SimpleServer(int domain, int service, int protocol, int port, unsigned long interface_addr, int bklg);
 
-        virttual void launch()=0;
+        virtual void launch()=0;
 
 
         ListeningSocket * get_socket();

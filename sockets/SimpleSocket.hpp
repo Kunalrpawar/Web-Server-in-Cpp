@@ -22,13 +22,16 @@ namespace HDE
 
     public:
         // Constructor
-        SimpleSocket(int domain, int service, int protocol, int port, u_long interface);
+        SimpleSocket(int domain, int service, int protocol, int port, unsigned long interface_addr);
 
         // Pure virtual function (must be implemented by derived classes)
-        virtual void connect_to_network(int sock, struct sockaddr_in address) = 0;
+        virtual int connect_to_network(int sock, struct sockaddr_in address) = 0;
 
         // Function to test socket and connection success
         void test_connection(int item_to_test);
+
+        // Setter function
+        void set_connection(int conn);
 
         // Getter functions
         struct sockaddr_in get_address();

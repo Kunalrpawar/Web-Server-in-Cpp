@@ -1,5 +1,5 @@
-#ifndef "ListeningSocket.hpp"
-#define "ListeningSocket.hpp"
+#ifndef ListeningSocket_hpp
+#define ListeningSocket_hpp
 
 #include "BindingSocket.hpp"
 #include <stdio.h>
@@ -16,9 +16,11 @@ namespace HDE {
 
         public: 
 
-        ListeningSocket(int domain, int service ,int protocol, int port , u_long interface int bklg);  
+        ListeningSocket(int domain, int service ,int protocol, int port , unsigned long interface_addr, int bklg);  
     
-void start_listening();
+        void start_listening();
+        int get_listening();
+        int get_backlog();
 
     };
 
