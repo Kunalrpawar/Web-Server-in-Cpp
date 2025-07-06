@@ -15,7 +15,7 @@ int main() {
         return 1;
     }
     
-    cout << " Advanced C++ Web Server Starting..." << endl;
+    cout << "🚀 Advanced C++ Web Server Starting..." << endl;
     cout << "Features: Static File Serving, Multi-Threading, Admin Panel" << endl;
     
     try {

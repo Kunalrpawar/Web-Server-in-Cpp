@@ -64,17 +64,31 @@ namespace HDE
             
             // Parse the HTTP request
             std::string path = parse_http_request(request);
-            log_request(client_ip, path);
+            std::string user_agent = parse_user_agent(request);
             
             // Serve the appropriate content
             std::string response;
+            int response_code = 200;
+            
             if (path == "/admin") {
                 response = serve_admin_panel();
             } else if (path == "/" || path == "/index.html") {
                 response = serve_static_file("/index.html");
             } else {
                 response = serve_static_file(path);
+                if (response.find("404") != std::string::npos) {
+                    response_code = 404;
+                }
             }
+            
+            // Extract IP and port from client_ip string
+            size_t colon_pos = client_ip.find(':');
+            std::string ip = client_ip.substr(0, colon_pos);
+            std::string port = client_ip.substr(colon_pos + 1);
+            
+            // Log the request and add to client connections
+            log_request(client_ip, path, user_agent, response_code);
+            add_client_connection(ip, port, user_agent, path, response_code);
             
             // Send response
             send(client_socket, response.c_str(), response.length(), 0);
@@ -96,6 +110,17 @@ namespace HDE
         }
         
         return path;
+    }
+
+    std::string AdvancedServer::parse_user_agent(const std::string& request) {
+        std::istringstream iss(request);
+        std::string line;
+        while (std::getline(iss, line)) {
+            if (line.find("User-Agent:") == 0) {
+                return line.substr(12); // Remove "User-Agent: " prefix
+            }
+        }
+        return "Unknown";
     }
 
     std::string AdvancedServer::get_mime_type(const std::string& filename) {
@@ -172,12 +197,35 @@ namespace HDE
         return create_http_response(html, "text/html", status_code);
     }
 
-    void AdvancedServer::log_request(const std::string& client_ip, const std::string& request) {
+    void AdvancedServer::log_request(const std::string& client_ip, const std::string& request, const std::string& user_agent, int response_code) {
         stats.total_requests++;
         stats.active_connections++;
         
-        std::string log_entry = "[" + client_ip + "] " + request;
+        std::string log_entry = "[" + client_ip + "] " + request + " (" + std::to_string(response_code) + ")";
         add_log(log_entry);
+    }
+
+    void AdvancedServer::add_client_connection(const std::string& ip, const std::string& port, const std::string& user_agent, const std::string& path, int response_code) {
+        ClientConnection conn;
+        conn.ip_address = ip;
+        conn.port = port;
+        conn.user_agent = user_agent;
+        conn.request_path = path;
+        conn.response_code = response_code;
+        
+        // Get current timestamp
+        auto now = std::chrono::system_clock::now();
+        auto time_t = std::chrono::system_clock::to_time_t(now);
+        std::string timestamp = std::ctime(&time_t);
+        timestamp.pop_back(); // Remove newline
+        conn.timestamp = timestamp;
+        
+        stats.client_connections.push_back(conn);
+        
+        // Keep only last 100 connections
+        if (stats.client_connections.size() > 100) {
+            stats.client_connections.erase(stats.client_connections.begin());
+        }
     }
 
     void AdvancedServer::add_log(const std::string& message) {
@@ -224,5 +272,9 @@ namespace HDE
 
     std::vector<std::string> AdvancedServer::get_recent_logs() {
         return stats.recent_logs;
+    }
+
+    std::vector<ClientConnection> AdvancedServer::get_client_connections() {
+        return stats.client_connections;
     }
 } 

@@ -9,7 +9,7 @@
 <body class="admin-container">
     <div class="admin-header">
         <h1>🔧 Server Admin Panel</h1>
-        <p>Real-time server statistics and logs</p>
+        <p>Real-time server statistics and client connections</p>
     </div>
     
     <div class="stats-grid">
@@ -26,13 +26,13 @@
             <div class="stat-label">Server Uptime</div>
         </div>
         <div class="stat-card">
-            <div class="stat-number" id="memory-usage">0 MB</div>
-            <div class="stat-label">Memory Usage</div>
+            <div class="stat-number" id="unique-clients">0</div>
+            <div class="stat-label">Unique Clients</div>
         </div>
     </div>
     
     <div class="logs-section">
-        <h3> Recent Server Logs</h3>
+        <h3>📋 Recent Server Logs</h3>
         <div id="logs-container">
             <div class="log-entry info">
                 <strong>[INFO]</strong> Server started on port 8080
@@ -44,49 +44,110 @@
     </div>
     
     <div class="logs-section">
-        <h3> Recent Client Connections</h3>
+        <h3>🌐 Recent Client Connections</h3>
         <div id="connections-container">
             <div class="log-entry info">
-                <strong>[CONNECTION]</strong> 127.0.0.1:12345 - GET /admin
+                <strong>[CONNECTION]</strong> Loading client data...
             </div>
         </div>
     </div>
     
     <script>
-        // Simulate real-time updates
-        let requestCount = 0;
-        let connectionCount = 0;
-        let startTime = Date.now();
-        
+        // Function to update stats from server data
         function updateStats() {
-            // Update request count
-            requestCount += Math.floor(Math.random() * 3);
-            document.getElementById('total-requests').textContent = requestCount;
+            // For now, we'll simulate the data since we need to implement
+            // a way to get real-time data from the server
+            // In a real implementation, you'd make AJAX calls to get server stats
             
-            // Update active connections
-            connectionCount = Math.floor(Math.random() * 5) + 1;
-            document.getElementById('active-connections').textContent = connectionCount;
+            // Simulate increasing request count
+            let currentRequests = parseInt(document.getElementById('total-requests').textContent);
+            document.getElementById('total-requests').textContent = currentRequests + Math.floor(Math.random() * 2);
             
             // Update uptime
-            const uptime = Math.floor((Date.now() - startTime) / 1000);
-            document.getElementById('uptime').textContent = uptime + 's';
+            let currentUptime = parseInt(document.getElementById('uptime').textContent);
+            document.getElementById('uptime').textContent = (currentUptime + 2) + 's';
             
-            // Update memory usage
-            const memory = Math.floor(Math.random() * 50) + 10;
-            document.getElementById('memory-usage').textContent = memory + ' MB';
+            // Update unique clients (simulated)
+            let uniqueClients = Math.floor(Math.random() * 10) + 1;
+            document.getElementById('unique-clients').textContent = uniqueClients;
         }
         
-        // Update stats every 2 seconds
-        setInterval(updateStats, 2000);
+        // Function to add client connection entry
+        function addClientConnection(ip, port, userAgent, path, responseCode, timestamp) {
+            const connectionsContainer = document.getElementById('connections-container');
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry info';
+            
+            const statusClass = responseCode === 200 ? 'success' : responseCode === 404 ? 'error' : 'info';
+            logEntry.className = `log-entry ${statusClass}`;
+            
+            // Truncate user agent for display
+            const shortUserAgent = userAgent.length > 50 ? userAgent.substring(0, 50) + '...' : userAgent;
+            
+            logEntry.innerHTML = `
+                <strong>[${timestamp}]</strong><br>
+                <strong>IP:</strong> ${ip}:${port}<br>
+                <strong>Request:</strong> ${path} (${responseCode})<br>
+                <strong>Browser:</strong> ${shortUserAgent}
+            `;
+            
+            connectionsContainer.insertBefore(logEntry, connectionsContainer.firstChild);
+            
+            // Keep only last 20 connections
+            if (connectionsContainer.children.length > 20) {
+                connectionsContainer.removeChild(connectionsContainer.lastChild);
+            }
+        }
+        
+        // Simulate some client connections for demonstration
+        function simulateClientConnections() {
+            const sampleConnections = [
+                {
+                    ip: '127.0.0.1',
+                    port: '54321',
+                    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+                    path: '/index.html',
+                    responseCode: 200,
+                    timestamp: new Date().toLocaleTimeString()
+                },
+                {
+                    ip: '192.168.1.100',
+                    port: '12345',
+                    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0',
+                    path: '/style.css',
+                    responseCode: 200,
+                    timestamp: new Date().toLocaleTimeString()
+                },
+                {
+                    ip: '10.0.0.50',
+                    port: '67890',
+                    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
+                    path: '/admin',
+                    responseCode: 200,
+                    timestamp: new Date().toLocaleTimeString()
+                }
+            ];
+            
+            sampleConnections.forEach(conn => {
+                addClientConnection(conn.ip, conn.port, conn.userAgent, conn.path, conn.responseCode, conn.timestamp);
+            });
+        }
+        
+        // Update stats every 3 seconds
+        setInterval(updateStats, 3000);
+        
+        // Simulate initial client connections
+        setTimeout(simulateClientConnections, 1000);
         
         // Add some sample logs
         const logTypes = ['info', 'success', 'error'];
         const logMessages = [
-            'Client connected from 192.168.1.100',
-            'Served index.html successfully',
+            'Client connected from 127.0.0.1:54321',
+            'Served index.html successfully (200)',
             '404 error for /missing-page',
-            'Static file served: style.css',
-            'New thread spawned for client',
+            'Static file served: style.css (200)',
+            'Admin panel accessed by 10.0.0.50:67890',
             'Connection closed gracefully'
         ];
         
@@ -107,8 +168,13 @@
             }
         }
         
-        // Add random logs every 3 seconds
-        setInterval(addRandomLog, 3000);
+        // Add random logs every 5 seconds
+        setInterval(addRandomLog, 5000);
+        
+        // Auto-refresh admin panel every 10 seconds
+        setInterval(() => {
+            location.reload();
+        }, 10000);
     </script>
 </body>
 </html> 

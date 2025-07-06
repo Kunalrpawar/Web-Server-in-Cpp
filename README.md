@@ -68,6 +68,8 @@ A simple HTTP web server implemented in C++ using Windows Sockets (Winsock).
    WebServer.exe
    ```
 
+   or .\build_gcc.bat
+
 ## Usage
 
 1. Start the server (requires administrator privileges for port 80)
@@ -104,7 +106,3 @@ The project uses a layered architecture:
 - **ListeningSocket**: Manages listening for incoming connections
 - **SimpleServer**: Abstract server class defining the server interface
 - **TestServer**: Concrete implementation of the web server
-
-## License
-
-This project is open source and available under the MIT License. 
