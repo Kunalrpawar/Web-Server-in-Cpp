@@ -25,7 +25,7 @@ namespace HDE
         SimpleSocket(int domain, int service, int protocol, int port, u_long interface);
 
         // Pure virtual function (must be implemented by derived classes)
-        virtual int connect_to_network(int sock, struct sockaddr_in address) = 0;
+        virtual void connect_to_network(int sock, struct sockaddr_in address) = 0;
 
         // Function to test socket and connection success
         void test_connection(int item_to_test);
