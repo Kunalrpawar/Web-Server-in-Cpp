@@ -82,13 +82,8 @@ A simple HTTP web server implemented in C++ using Windows Sockets (Winsock).
 - **Firewall**: You may need to allow the application through Windows Firewall
 - **Port 80**: If port 80 is already in use, modify the port number in `TestServer.cpp`
 
-## Troubleshooting
 
-### Common Issues
 
-1. **"WSAStartup failed"**: Ensure you're running as administrator
-2. **"Failed to bind"**: Port 80 might be in use by another service (IIS, Apache, etc.)
-3. **Build errors**: Make sure Visual Studio C++ tools are installed
 
 ### Alternative Port
 
